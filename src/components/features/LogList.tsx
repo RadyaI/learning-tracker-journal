@@ -81,7 +81,7 @@ export default function LogList({ limit, isGrid = false, onEdit }: { limit?: num
   if (logs.length === 0) {
     return (
       <div className="flex h-64 flex-col items-center justify-center rounded-3xl border border-dashed border-zinc-800 bg-zinc-900/30 text-center">
-        <img src="/images/cats/cat4.png" className="w-16 h-16 opacity-50 mb-4 grayscale" alt="Empty" />
+        <img src="/images/cats/cat4.png" className="w-25 h-25 mb-4" alt="Empty" />
         <p className="text-zinc-500 font-medium">Belum ada jejak hari ini.</p>
       </div>
     );
