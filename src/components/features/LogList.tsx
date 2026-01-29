@@ -7,8 +7,8 @@ import { getFirestore } from 'firebase/firestore';
 import { app } from '@/lib/firebase';
 import { Clock, Zap, Trash2, Calendar, Edit2, Search } from 'lucide-react';
 import { LogEntry } from '@/types';
-import swal from 'sweetalert';
-import toast from 'react-hot-toast';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 const db = getFirestore(app);
 const auth = getAuth(app);
@@ -45,16 +45,16 @@ export default function LogList({ limit, isGrid = false, onEdit }: { limit?: num
   }, [limit]);
 
   const handleDelete = async (id: string) => {
-    const confirm: boolean = await swal({
-      title: "Yakin mau dihapus?",
+  
+    let confirm:boolean = await swal({
+      title: "Mau dihapus?",
       icon: "warning",
-      buttons: ["Tidak", "Iya Hapus aja"],
+      buttons: ["Engga", "Iya"],
       dangerMode: true
     })
-
+    
     if (confirm) {
       await deleteDoc(doc(db, 'logs', id));
-      toast.success("byee...")
     }
   };
 
@@ -94,7 +94,7 @@ export default function LogList({ limit, isGrid = false, onEdit }: { limit?: num
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500" size={18} />
           <input
             type="text"
-            placeholder="Cari catatan..."
+            placeholder="Cari catatan masa lalu..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full rounded-xl border border-zinc-800 bg-zinc-900 py-3 pl-12 pr-4 text-sm text-white placeholder-zinc-500 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-all"
@@ -138,9 +138,36 @@ export default function LogList({ limit, isGrid = false, onEdit }: { limit?: num
                 </div>
               </div>
 
-              <p className="text-sm text-zinc-300 leading-relaxed font-light whitespace-pre-wrap break-words">
-                {log.content}
-              </p>
+              { }
+              <div className="text-sm text-zinc-300 leading-relaxed font-light break-words">
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    h1: ({ node, ...props }) => <h1 className="text-xl font-bold mt-4 mb-2 text-indigo-400 border-b border-zinc-800 pb-1" {...props} />,
+                    h2: ({ node, ...props }) => <h2 className="text-lg font-bold mt-3 mb-2 text-white" {...props} />,
+                    h3: ({ node, ...props }) => <h3 className="text-base font-bold mt-2 mb-1 text-zinc-200" {...props} />,
+                    p: ({ node, ...props }) => <p className="mb-2 last:mb-0" {...props} />,
+                    strong: ({ node, ...props }) => <strong className="font-bold text-white" {...props} />,
+                    em: ({ node, ...props }) => <em className="italic text-zinc-400" {...props} />,
+                    a: ({ node, ...props }) => <a className="text-indigo-400 hover:underline cursor-pointer" target="_blank" rel="noopener noreferrer" {...props} />,
+                    ul: ({ node, ...props }) => <ul className="list-disc pl-4 mb-2 space-y-1" {...props} />,
+                    ol: ({ node, ...props }) => <ol className="list-decimal pl-4 mb-2 space-y-1" {...props} />,
+                    li: ({ node, ...props }) => <li className="pl-1 marker:text-zinc-500" {...props} />,
+                    blockquote: ({ node, ...props }) => <blockquote className="border-l-2 border-indigo-500 pl-4 italic text-zinc-400 my-2 bg-zinc-950/50 py-1 pr-2 rounded-r" {...props} />,
+                    code: ({ node, inline, className, children, ...props }: any) => {
+                      return inline ? (
+                        <code className="bg-zinc-800 px-1 py-0.5 rounded text-xs font-mono text-indigo-300 border border-zinc-700" {...props}>{children}</code>
+                      ) : (
+                        <div className="overflow-x-auto bg-zinc-950 p-3 rounded-lg border border-zinc-800 my-2">
+                          <code className="block text-xs font-mono text-zinc-300 whitespace-pre" {...props}>{children}</code>
+                        </div>
+                      )
+                    }
+                  }}
+                >
+                  {log.content}
+                </ReactMarkdown>
+              </div>
 
               <div className="absolute right-3 top-3 flex gap-2 opacity-0 transition group-hover:opacity-100">
                 {onEdit && (
@@ -165,7 +192,7 @@ export default function LogList({ limit, isGrid = false, onEdit }: { limit?: num
           ))
         ) : (
           <div className="col-span-full py-10 text-center text-zinc-500">
-            <p>Gak nemu catatan yang dicari, Bro.</p>
+            <p>Gak nemu catatan yang dicari.</p>
           </div>
         )}
       </div>

@@ -5,7 +5,7 @@ import { addDoc, collection, serverTimestamp, updateDoc, doc } from 'firebase/fi
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { app } from '@/lib/firebase';
-import { Send, Clock, Zap, X, PenTool } from 'lucide-react';
+import { Send, Clock, Zap, X, PenTool, Maximize2 } from 'lucide-react';
 import { LogEntry } from '@/types';
 import { toast } from 'react-hot-toast';
 
@@ -91,15 +91,17 @@ export default function LogForm({ editingLog, onCancel }: { editingLog: LogEntry
                 )}
             </div>
 
-            <textarea
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                placeholder="Tulis aja, apapun yang kamu pelajari hari ini..."
-                className={`h-24 w-full resize-none rounded-xl border bg-zinc-950 p-4 text-sm text-white placeholder-zinc-600 focus:outline-none focus:ring-1 focus:ring-offset-0 transition-colors ${editingLog
-                    ? 'border-yellow-500/50 focus:border-yellow-500 focus:ring-yellow-500'
-                    : 'border-zinc-700 focus:border-indigo-500 focus:ring-indigo-500'
-                    }`}
-            />
+            <div className="relative group">
+                <textarea
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
+                    placeholder="Tumpahkan semua isi pikiranmu disini..."
+                    className={`w-full resize-y rounded-xl border bg-zinc-950 p-4 text-sm leading-relaxed text-white placeholder-zinc-600 focus:outline-none focus:ring-1 focus:ring-offset-0 transition-colors scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-transparent ${editingLog
+                        ? 'border-yellow-500/50 focus:border-yellow-500 focus:ring-yellow-500'
+                        : 'border-zinc-700 focus:border-indigo-500 focus:ring-indigo-500'
+                        }`}
+                />
+            </div>
 
             <div className="flex items-center gap-3 overflow-x-auto pb-1 scrollbar-hide">
                 {[5, 15, 30, 60, 120].map((m) => (

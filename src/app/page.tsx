@@ -6,7 +6,7 @@ import LogForm from '@/components/features/LogForm';
 import LogList from '@/components/features/LogList';
 import StreakHero from '@/components/features/StreakHero';
 import ExportData from '@/components/features/ExportData';
-import { LogOut, Link2 } from 'lucide-react'; 
+import { LogOut, Link2 } from 'lucide-react';
 import { getAuth } from 'firebase/auth';
 import { app } from '@/lib/firebase';
 import Link from 'next/link';
@@ -17,8 +17,10 @@ export default function Home() {
 
   return (
     <AuthGuard>
-      <main className="min-h-screen bg-zinc-950 text-zinc-100 pb-20">
-        <nav className="sticky top-0 z-50 border-b border-zinc-800/50 bg-zinc-950/80 p-4 backdrop-blur-md">
+
+      <main className="flex flex-col bg-zinc-950 text-zinc-100 min-h-screen lg:h-screen lg:overflow-hidden">
+        
+        <nav className="shrink-0 border-b border-zinc-800/50 bg-zinc-950/80 p-4 backdrop-blur-md z-50">
           <div className="mx-auto flex max-w-7xl items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 overflow-hidden rounded-xl bg-indigo-500 shadow-lg shadow-indigo-500/20">
@@ -31,7 +33,6 @@ export default function Home() {
             </div>
             
             <div className="flex items-center gap-2">
-                
               <Link href="/resources" className="hidden md:flex items-center gap-2 rounded-lg bg-zinc-900 px-4 py-2 text-xs font-bold text-zinc-400 hover:bg-zinc-800 hover:text-white transition">
                 <Link2 size={16} />
                 Link Saver
@@ -47,12 +48,12 @@ export default function Home() {
           </div>
         </nav>
 
-        <div className="mx-auto max-w-7xl px-4 pt-8">
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
-            
-              
-            <div className="space-y-6 lg:col-span-5 xl:col-span-4">
-              <div className="lg:sticky lg:top-24 space-y-6">
+        <div className="flex-1 lg:overflow-hidden">
+          <div className="mx-auto max-w-7xl h-full px-4 lg:pt-8">
+            <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:h-full">
+
+              <div className="space-y-6 lg:col-span-5 xl:col-span-4 lg:h-full lg:overflow-y-auto lg:pr-4 scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-transparent pb-10 pt-6 lg:pt-0">
+                
                 <StreakHero />
                 
                 <div id="log-form" className="relative overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-900/50 shadow-2xl transition-all duration-300">
@@ -66,32 +67,34 @@ export default function Home() {
                 </div>
 
                 <ExportData />
-                  
-                <div className="lg:hidden text-center pt-4">
+
+                <div className="lg:hidden text-center pt-4 pb-8">
                    <Link href="/resources" className="text-sm font-bold text-zinc-500 underline underline-offset-4">
                      Ke Link Saver
                    </Link>
                 </div>
               </div>
-            </div>
 
-            <div className="lg:col-span-7 xl:col-span-8">
-              <div className="mb-6 flex items-center justify-between">
-                <h2 className="text-2xl font-black tracking-tight flex items-center gap-2">
-                  Jurnal
-                  <span className="text-xs font-normal text-zinc-500 bg-zinc-900 px-2 py-1 rounded-full border border-zinc-800">All Time</span>
-                </h2>
+              <div className="lg:col-span-7 xl:col-span-8 lg:h-full lg:overflow-y-auto lg:pb-20 scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-transparent">
+                <div className="mb-6 flex items-center justify-between sticky top-0 bg-zinc-950/95 backdrop-blur z-40 py-4 border-b border-zinc-900 lg:border-none">
+                  <h2 className="text-2xl font-black tracking-tight flex items-center gap-2">
+                    Jurnal
+                    <span className="text-xs font-normal text-zinc-500 bg-zinc-900 px-2 py-1 rounded-full border border-zinc-800">All Time</span>
+                  </h2>
+                </div>
+                
+                <div className="pb-20">
+                  <LogList 
+                    isGrid={true} 
+                    onEdit={(log) => {
+                      setEditingLog(log);
+                      document.getElementById('log-form')?.scrollIntoView({ behavior: 'smooth' });
+                    }} 
+                  />
+                </div>
               </div>
-              
-              <LogList 
-                isGrid={true} 
-                onEdit={(log) => {
-                  setEditingLog(log);
-                  document.getElementById('log-form')?.scrollIntoView({ behavior: 'smooth' });
-                }} 
-              />
-            </div>
 
+            </div>
           </div>
         </div>
       </main>
