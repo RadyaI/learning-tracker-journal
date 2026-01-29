@@ -5,7 +5,8 @@ import { collection, query, where, orderBy, onSnapshot, limit as fireLimit, dele
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { app } from '@/lib/firebase';
-import { Clock, Zap, Trash2, Calendar, Edit2, Search } from 'lucide-react';
+import ReadContentModal from './readContentModal';
+import { Clock, Zap, Trash2, Calendar, Edit2, Search, Expand } from 'lucide-react';
 import { LogEntry } from '@/types';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -17,6 +18,7 @@ export default function LogList({ limit, isGrid = false, onEdit }: { limit?: num
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [viewingLog, setViewingLog] = useState<LogEntry | null>(null);
 
   useEffect(() => {
     const user = auth.currentUser;
@@ -45,14 +47,14 @@ export default function LogList({ limit, isGrid = false, onEdit }: { limit?: num
   }, [limit]);
 
   const handleDelete = async (id: string) => {
-  
-    let confirm:boolean = await swal({
+
+    let confirm: boolean = await swal({
       title: "Mau dihapus?",
       icon: "warning",
       buttons: ["Engga", "Iya"],
       dangerMode: true
     })
-    
+
     if (confirm) {
       await deleteDoc(doc(db, 'logs', id));
     }
@@ -130,8 +132,8 @@ export default function LogList({ limit, isGrid = false, onEdit }: { limit?: num
                 </div>
 
                 <div className={`flex items-center gap-1 rounded-full px-2 py-1 text-[10px] font-bold border ${log.isEmergency
-                    ? 'border-orange-500/30 bg-orange-500/10 text-orange-400'
-                    : 'border-indigo-500/30 bg-indigo-500/10 text-indigo-400'
+                  ? 'border-orange-500/30 bg-orange-500/10 text-orange-400'
+                  : 'border-indigo-500/30 bg-indigo-500/10 text-indigo-400'
                   }`}>
                   {log.isEmergency ? <Zap size={10} /> : <Clock size={10} />}
                   {log.duration}m
@@ -170,6 +172,14 @@ export default function LogList({ limit, isGrid = false, onEdit }: { limit?: num
               </div>
 
               <div className="absolute right-3 top-3 flex gap-2 opacity-0 transition group-hover:opacity-100">
+                <button
+                  onClick={() => setViewingLog(log)}
+                  className="bg-zinc-900/80 text-zinc-400 hover:text-red-500 p-1.5 rounded-lg backdrop-blur-sm border border-zinc-800 transition hover:bg-zinc-800"
+                  title="Expand"
+                >
+                  <Expand size={14} />
+                </button>
+
                 {onEdit && (
                   <button
                     onClick={() => onEdit(log)}
@@ -196,6 +206,10 @@ export default function LogList({ limit, isGrid = false, onEdit }: { limit?: num
           </div>
         )}
       </div>
+      <ReadContentModal
+        log={viewingLog}
+        onClose={() => setViewingLog(null)}
+      />
     </div>
   );
 }
