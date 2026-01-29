@@ -1,65 +1,100 @@
-import Image from "next/image";
+'use client';
+
+import { useState } from 'react';
+import AuthGuard from '@/components/features/AuthGuard';
+import LogForm from '@/components/features/LogForm';
+import LogList from '@/components/features/LogList';
+import StreakHero from '@/components/features/StreakHero';
+import ExportData from '@/components/features/ExportData';
+import { LogOut, Link2 } from 'lucide-react'; 
+import { getAuth } from 'firebase/auth';
+import { app } from '@/lib/firebase';
+import Link from 'next/link';
+import { LogEntry } from '@/types';
 
 export default function Home() {
+  const [editingLog, setEditingLog] = useState<LogEntry | null>(null);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+    <AuthGuard>
+      <main className="min-h-screen bg-zinc-950 text-zinc-100 pb-20">
+        <nav className="sticky top-0 z-50 border-b border-zinc-800/50 bg-zinc-950/80 p-4 backdrop-blur-md">
+          <div className="mx-auto flex max-w-7xl items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 overflow-hidden rounded-xl bg-indigo-500 shadow-lg shadow-indigo-500/20">
+                <img src="/images/cats/cat2.png" alt="Logo" className="object-cover" />
+              </div>
+              <div>
+                <h1 className="font-black tracking-tighter text-lg leading-none">DailyGrind</h1>
+                <p className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest">Personal Growth</p>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-2">
+                
+              <Link href="/resources" className="hidden md:flex items-center gap-2 rounded-lg bg-zinc-900 px-4 py-2 text-xs font-bold text-zinc-400 hover:bg-zinc-800 hover:text-white transition">
+                <Link2 size={16} />
+                Link Saver
+              </Link>
+              <button 
+                onClick={() => getAuth(app).signOut()}
+                className="rounded-lg p-2 hover:bg-zinc-900 text-zinc-400 hover:text-red-400 transition"
+                title="Logout"
+              >
+                <LogOut size={20} />
+              </button>
+            </div>
+          </div>
+        </nav>
+
+        <div className="mx-auto max-w-7xl px-4 pt-8">
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
+            
+              
+            <div className="space-y-6 lg:col-span-5 xl:col-span-4">
+              <div className="lg:sticky lg:top-24 space-y-6">
+                <StreakHero />
+                
+                <div id="log-form" className="relative overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-900/50 shadow-2xl transition-all duration-300">
+                   <div className={`absolute top-0 right-0 -mt-10 -mr-10 h-32 w-32 rounded-full blur-3xl transition-colors ${editingLog ? 'bg-yellow-500/20' : 'bg-indigo-500/20'}`}></div>
+                   <div className="absolute bottom-0 left-0 -mb-10 -ml-10 h-32 w-32 rounded-full bg-orange-500/10 blur-3xl"></div>
+                   
+                   <LogForm 
+                     editingLog={editingLog} 
+                     onCancel={() => setEditingLog(null)} 
+                   />
+                </div>
+
+                <ExportData />
+                  
+                <div className="lg:hidden text-center pt-4">
+                   <Link href="/resources" className="text-sm font-bold text-zinc-500 underline underline-offset-4">
+                     Ke Link Saver
+                   </Link>
+                </div>
+              </div>
+            </div>
+
+            <div className="lg:col-span-7 xl:col-span-8">
+              <div className="mb-6 flex items-center justify-between">
+                <h2 className="text-2xl font-black tracking-tight flex items-center gap-2">
+                  Jurnal
+                  <span className="text-xs font-normal text-zinc-500 bg-zinc-900 px-2 py-1 rounded-full border border-zinc-800">All Time</span>
+                </h2>
+              </div>
+              
+              <LogList 
+                isGrid={true} 
+                onEdit={(log) => {
+                  setEditingLog(log);
+                  document.getElementById('log-form')?.scrollIntoView({ behavior: 'smooth' });
+                }} 
+              />
+            </div>
+
+          </div>
         </div>
       </main>
-    </div>
+    </AuthGuard>
   );
 }
