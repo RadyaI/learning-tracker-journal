@@ -126,7 +126,7 @@ export default function LogList({ limit, isGrid = false, onEdit }: { limit?: num
                       {(log as any).dateString} • {formatTime(log.createdAt)}
                     </span>
                     <span className={`text-xs font-bold ${log.isEmergency ? 'text-orange-400' : 'text-indigo-400'}`}>
-                      {log.isEmergency ? 'Emergency Mode' : 'Normal Session'}
+                      {log.category}
                     </span>
                   </div>
                 </div>
