@@ -155,7 +155,7 @@ export default function LogList({ limit, isGrid = false, onEdit }: { limit?: num
                     ul: ({ node, ...props }) => <ul className="list-disc pl-4 mb-2 space-y-1" {...props} />,
                     ol: ({ node, ...props }) => <ol className="list-decimal pl-4 mb-2 space-y-1" {...props} />,
                     li: ({ node, ...props }) => <li className="pl-1 marker:text-zinc-500" {...props} />,
-                    blockquote: ({ node, ...props }) => <blockquote className="border-l-2 border-indigo-500 pl-4 italic text-zinc-400 my-2 bg-zinc-950/50 py-1 pr-2 rounded-r" {...props} />,
+                    blockquote: ({ node, ...props }) => <blockquote className="border-l-2 border-indigo-500 pl-4 text-zinc-400 my-2 bg-zinc-950/50 py-1 pr-2 rounded-r" {...props} />,
                     code: ({ node, inline, className, children, ...props }: any) => {
                       return inline ? (
                         <code className="bg-zinc-800 px-1 py-0.5 rounded text-xs font-mono text-indigo-300 border border-zinc-700" {...props}>{children}</code>
