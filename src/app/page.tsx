@@ -82,7 +82,7 @@ export default function Home() {
               <div className="lg:col-span-7 xl:col-span-8 lg:h-full lg:overflow-y-auto lg:pb-20 scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-transparent">
                 <div className="mb-6 flex items-center justify-between sticky top-0 bg-zinc-950/95 backdrop-blur z-40 py-4 border-b border-zinc-900 lg:border-none">
                   <h2 className="text-2xl font-black tracking-tight flex items-center gap-2">
-                    Jurnal
+                    Life Logging
                     <span className="text-xs font-normal text-zinc-500 bg-zinc-900 px-2 py-1 rounded-full border border-zinc-800">All Time</span>
                   </h2>
                 </div>
