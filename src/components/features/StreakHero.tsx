@@ -5,7 +5,7 @@ import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { app } from '@/lib/firebase';
-import { Flame, Trophy, Hourglass, Medal } from 'lucide-react';
+import { Flame, Medal} from 'lucide-react';
 
 const db = getFirestore(app);
 const auth = getAuth(app);
@@ -27,7 +27,7 @@ export default function StreakHero() {
       );
 
       const snapshot = await getDocs(q);
-      
+
       let totalMinutes = 0;
       snapshot.docs.forEach(doc => {
         const data = doc.data();
@@ -58,7 +58,7 @@ export default function StreakHero() {
       for (let i = 1; i < uniqueDates.length; i++) {
         checkDate.setDate(checkDate.getDate() - 1);
         const expectedDate = checkDate.toISOString().split('T')[0];
-        
+
         if (uniqueDates[i] === expectedDate) {
           currentStreak++;
         } else {
@@ -77,30 +77,41 @@ export default function StreakHero() {
 
   return (
     <div className="grid grid-cols-2 gap-3">
-        
+
       <div className="relative overflow-hidden rounded-3xl bg-indigo-600 p-5 text-white shadow-lg shadow-indigo-500/20">
         <div className="absolute -right-4 -top-4 opacity-20 rotate-12">
-           <Flame size={80} />
+          <Flame size={80} />
         </div>
         <p className="text-[10px] font-bold text-indigo-200 uppercase tracking-widest mb-1">Streak</p>
         <h2 className="text-4xl font-black tracking-tighter">{streak}</h2>
         <p className="text-xs font-medium text-indigo-100">Hari</p>
       </div>
 
-        
-      <div className="relative overflow-hidden rounded-3xl bg-zinc-900 border border-zinc-800 p-5 text-white">
-        <div className="absolute -right-4 -top-4 opacity-10 rotate-12 text-emerald-500">
-           <Hourglass size={80} />
-        </div>
-        <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1">Total Jam</p>
+
+      <div className="group cursor-pointer relative overflow-hidden rounded-3xl bg-zinc-900 border border-zinc-800 p-5 text-white">
+
+        <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1">
+          Total Jam
+        </p>
+
         <h2 className="text-4xl font-black tracking-tighter flex items-baseline gap-1">
-          {totalHours}<span className="text-sm font-medium text-zinc-500">JAM</span>
+          <span className="hidden group-hover:inline">
+            {totalHours}
+          </span>
+          <span className="group-hover:hidden">
+            ?
+          </span>
+          <span className="text-sm font-medium text-zinc-500">JAM</span>
         </h2>
+
         <div className="mt-2 flex items-center gap-1 rounded-full bg-zinc-800 w-fit px-2 py-0.5">
-           <Medal size={10} className="text-yellow-500" />
-           <span className="text-[10px] text-zinc-400">Investasi Isi Otak</span>
+          <Medal size={10} className="text-yellow-500" />
+          <span className="text-[10px] text-zinc-400">
+            Investasi Isi Otak
+          </span>
         </div>
       </div>
+
     </div>
   );
 }
