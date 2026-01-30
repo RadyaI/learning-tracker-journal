@@ -95,19 +95,19 @@ export default function LogForm({ editingLog, onCancel }: { editingLog: LogEntry
     const handleStart = () => {
         setIsActive(true);
         setIsPaused(false);
-        toast.success("Timer Jalan! Let's Grind! 🚀");
+        toast.success("Start");
     };
 
     const handlePause = () => {
         setIsPaused(true);
-        toast("Timer dipause.");
+        toast("Pause.");
     };
 
     const handleReset = () => {
         setIsActive(false);
         setIsPaused(false);
         setSeconds(0);
-        toast("Timer direset.");
+        toast("Reset.");
     };
 
     const resetForm = () => {
@@ -144,7 +144,7 @@ export default function LogForm({ editingLog, onCancel }: { editingLog: LogEntry
                     isEmergency,
                     category: finalStatus.label,
                 });
-                toast.success("Update berhasil! 🔥");
+                toast.success("Updated");
                 onCancel();
             } else {
                 const randomCat = Math.floor(Math.random() * 5) + 1;
@@ -158,11 +158,11 @@ export default function LogForm({ editingLog, onCancel }: { editingLog: LogEntry
                     isEmergency,
                     category: finalStatus.label,
                 });
-                toast.success("Mantap! Tersimpan! 🚀");
+                toast.success("Mantap");
                 resetForm();
             }
         } catch (error) {
-            toast.error("Gagal save, cek koneksi bro.");
+            toast.error("Gagal save.");
             console.error(error);
         } finally {
             setLoading(false);
