@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { collection, query, where, orderBy, onSnapshot, limit as fireLimit, deleteDoc, doc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
@@ -8,8 +8,6 @@ import { app } from '@/lib/firebase';
 import ReadContentModal from './readContentModal';
 import { Clock, Zap, Trash2, Calendar, Edit2, Search, Expand } from 'lucide-react';
 import { LogEntry } from '@/types';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 
 const db = getFirestore(app);
 const auth = getAuth(app);
@@ -47,7 +45,6 @@ export default function LogList({ limit, isGrid = false, onEdit }: { limit?: num
   }, [limit]);
 
   const handleDelete = async (id: string) => {
-
     let confirm: boolean = await swal({
       title: "Mau dihapus?",
       icon: "warning",
@@ -66,9 +63,15 @@ export default function LogList({ limit, isGrid = false, onEdit }: { limit?: num
     return date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
   };
 
-  const filteredLogs = logs.filter(log =>
-    log.content.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredLogs = useMemo(() => {
+    return logs.filter(log =>
+      log.content.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [logs, searchQuery]);
+
+  const getPreviewText = (text: string) => {
+    return text.replace(/[#*`_~]/g, '').slice(0, 150) + (text.length > 150 ? '...' : '');
+  };
 
   if (loading) {
     return (
@@ -140,35 +143,8 @@ export default function LogList({ limit, isGrid = false, onEdit }: { limit?: num
                 </div>
               </div>
 
-              { }
-              <div className="text-sm text-zinc-300 leading-relaxed font-light break-words">
-                <ReactMarkdown
-                  remarkPlugins={[remarkGfm]}
-                  components={{
-                    h1: ({ node, ...props }) => <h1 className="text-xl font-bold mt-4 mb-2 text-indigo-400 border-b border-zinc-800 pb-1" {...props} />,
-                    h2: ({ node, ...props }) => <h2 className="text-lg font-bold mt-3 mb-2 text-white" {...props} />,
-                    h3: ({ node, ...props }) => <h3 className="text-base font-bold mt-2 mb-1 text-zinc-200" {...props} />,
-                    p: ({ node, ...props }) => <p className="mb-2 last:mb-0" {...props} />,
-                    strong: ({ node, ...props }) => <strong className="font-bold text-white" {...props} />,
-                    em: ({ node, ...props }) => <em className="italic text-zinc-400" {...props} />,
-                    a: ({ node, ...props }) => <a className="text-indigo-400 hover:underline cursor-pointer" target="_blank" rel="noopener noreferrer" {...props} />,
-                    ul: ({ node, ...props }) => <ul className="list-disc pl-4 mb-2 space-y-1" {...props} />,
-                    ol: ({ node, ...props }) => <ol className="list-decimal pl-4 mb-2 space-y-1" {...props} />,
-                    li: ({ node, ...props }) => <li className="pl-1 marker:text-zinc-500" {...props} />,
-                    blockquote: ({ node, ...props }) => <blockquote className="border-l-2 border-indigo-500 pl-4 text-zinc-400 my-2 bg-zinc-950/50 py-1 pr-2 rounded-r" {...props} />,
-                    code: ({ node, inline, className, children, ...props }: any) => {
-                      return inline ? (
-                        <code className="bg-zinc-800 px-1 py-0.5 rounded text-xs font-mono text-indigo-300 border border-zinc-700" {...props}>{children}</code>
-                      ) : (
-                        <div className="overflow-x-auto bg-zinc-950 p-3 rounded-lg border border-zinc-800 my-2">
-                          <code className="block text-xs font-mono text-zinc-300 whitespace-pre" {...props}>{children}</code>
-                        </div>
-                      )
-                    }
-                  }}
-                >
-                  {log.content}
-                </ReactMarkdown>
+              <div className="text-sm text-zinc-300 leading-relaxed font-light break-words line-clamp-3">
+                 {getPreviewText(log.content)}
               </div>
 
               <div className="absolute right-3 top-3 flex gap-2 opacity-0 transition group-hover:opacity-100">
